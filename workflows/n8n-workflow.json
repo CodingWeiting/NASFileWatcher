@@ -1,0 +1,95 @@
+{
+  "name": "NAS 檔案監控 - 簡化版",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "file-change",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// 取得 body 裡的資料\nconst body = $input.first().json.body;\nconst eventType = body.eventType || body.event_type;\n\nif (eventType === 'batch') {\n  // === 批次通知 ===\n  const totalCount = body.totalCount || body.total_count;\n  const createdCount = body.createdCount || body.created_count;\n  const modifiedCount = body.modifiedCount || body.modified_count;\n  const deletedCount = body.deletedCount || body.deleted_count;\n  const endTime = body.endTime || body.end_time;\n  const files = body.files || [];\n  const folderStructure = body.folderStructure || body.folder_structure || [];\n\n  const endTimeStr = new Date(endTime).toLocaleString('zh-TW', {\n    timeZone: 'Asia/Taipei',\n    year: 'numeric',\n    month: '2-digit',\n    day: '2-digit',\n    hour: '2-digit',\n    minute: '2-digit',\n    second: '2-digit'\n  });\n\n  const showFileList = totalCount <= 10;\n  const isHugeScale = totalCount > 500;\n\n  let message = '';\n  if (isHugeScale) {\n    message = '大量檔案變動警告: ';\n  } else {\n    message = '批次檔案變動: ';\n  }\n\n  const stats = [];\n  if (createdCount > 0) stats.push('新增 ' + createdCount + ' 個');\n  if (modifiedCount > 0) stats.push('修改 ' + modifiedCount + ' 個');\n  if (deletedCount > 0) stats.push('刪除 ' + deletedCount + ' 個');\n  message += stats.join(', ') + '\\n';\n\n  message += '時間: ' + endTimeStr + '\\n';\n\n  if (showFileList && files.length > 0) {\n    message += '檔案清單:\\n';\n    \n    for (let i = 0; i < files.length; i++) {\n      const file = files[i];\n      const fname = file.fileName || file.file_name;\n      message += '  `' + fname + '`\\n';\n    }\n  } else if (folderStructure && folderStructure.length > 0) {\n    message += '資料夾結構:\\n';\n    \n    const maxFolders = isHugeScale ? 15 : 10;\n    const displayFolders = folderStructure.slice(0, maxFolders);\n    \n    for (let i = 0; i < displayFolders.length; i++) {\n      const folder = displayFolders[i];\n      const stats = [];\n      if (folder.createdCount > 0) stats.push('+' + folder.createdCount);\n      if (folder.modifiedCount > 0) stats.push('~' + folder.modifiedCount);\n      if (folder.deletedCount > 0) stats.push('-' + folder.deletedCount);\n      \n      const statsStr = stats.length > 0 ? ' (' + stats.join(', ') + ')' : '';\n      message += '`' + folder.folderPath + '`' + statsStr + '\\n';\n    }\n    \n    if (folderStructure.length > maxFolders) {\n      message += '... 還有 ' + (folderStructure.length - maxFolders) + ' 個資料夾\\n';\n    }\n  }\n\n  if (isHugeScale) {\n    message += '\\n重要提醒:\\n';\n    message += '  這是非常大量的檔案變動\\n';\n    message += '  請確認是否為預期的操作\\n';\n    message += '  建議檢查:批次同步/備份/誤刪\\n';\n    message += '  完整清單請查看程式日誌檔\\n';\n  }\n\n  return {\n    text: message,\n    username: 'NAS 檔案監控',\n    icon_emoji: ':package:'\n  };\n  \n} else {\n  // === 單一通知 ===\n  const fileName = body.fileName || body.file_name;\n  const relativePath = body.relativePath || body.relative_path;\n  const timestamp = body.timestamp;\n  const oldName = body.oldName || body.old_name;\n\n  const eventMap = {\n    created: '新增',\n    modified: '修改',\n    deleted: '刪除',\n    renamed: '重新命名',\n    test: '測試'\n  };\n\n  const time = new Date(timestamp).toLocaleString('zh-TW', {\n    timeZone: 'Asia/Taipei',\n    year: 'numeric',\n    month: '2-digit',\n    day: '2-digit',\n    hour: '2-digit',\n    minute: '2-digit',\n    second: '2-digit'\n  });\n\n  let message = (eventMap[eventType] || eventType) + ' 族群檔案\\n';\n  message += '檔案: `' + fileName + '`\\n';\n  message += '路徑: ' + (relativePath || '') + '\\n';\n  message += '時間: ' + time;\n\n  if (eventType === 'renamed' && oldName) {\n    message += '\\n原檔名: `' + oldName + '`';\n  }\n\n  return {\n    text: message,\n    username: 'NAS 檔案監控',\n    icon_emoji: ':file_folder:'\n  };\n}"
+      },
+      "name": "格式化通知",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://hooks.slack.com/services/YOUR/WEBHOOK/URL",
+        "authentication": "none",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "options": {}
+      },
+      "name": "發送到 Slack",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { status: 'success', message: 'Notification sent' } }}"
+      },
+      "name": "回應 Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [850, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "格式化通知",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "格式化通知": {
+      "main": [
+        [
+          {
+            "node": "發送到 Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "發送到 Slack": {
+      "main": [
+        [
+          {
+            "node": "回應 Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-11-17T00:00:00.000Z"
+}

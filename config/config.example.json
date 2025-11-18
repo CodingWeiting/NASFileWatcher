@@ -1,0 +1,9 @@
+{
+  "NasPath": "\\\\192.168.1.100\\FamilyLibrary",
+  "WebhookUrl": "https://your-n8n.com/webhook/file-change",
+  "DebounceSeconds": 3,
+  "EnableLogging": true,
+  "EnableBatchNotification": true,
+  "BatchThreshold": 10,
+  "BatchWindowSeconds": 10
+}
