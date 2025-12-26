@@ -161,7 +161,7 @@ namespace NASFileWatcher.Windows
         private void PauseResume_Click(object sender, RoutedEventArgs e)
         {
             _isPaused = !_isPaused;
-            
+
             if (_isPaused)
             {
                 _watcherService.Pause();
@@ -174,8 +174,25 @@ namespace NASFileWatcher.Windows
                 PauseMenuItem.Header = "暫停監控";
                 TrayIcon.ShowBalloonTip("NAS 檔案監控", "監控已繼續", Hardcodet.Wpf.TaskbarNotification.BalloonIcon.Info);
             }
-            
+
             UpdateTrayIcon(!_isPaused);
+        }
+
+        private void Reconnect_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                _watcherService.Reconnect();
+                _isPaused = false;
+                PauseMenuItem.Header = "⏸️ 暫停監控";
+                UpdateTrayIcon(true);
+                TrayIcon.ShowBalloonTip("NAS 檔案監控", "重新連接成功", Hardcodet.Wpf.TaskbarNotification.BalloonIcon.Info);
+            }
+            catch (Exception ex)
+            {
+                UpdateTrayIcon(false);
+                TrayIcon.ShowBalloonTip("NAS 檔案監控", $"重新連接失敗: {ex.Message}", Hardcodet.Wpf.TaskbarNotification.BalloonIcon.Error);
+            }
         }
 
         private void Exit_Click(object sender, RoutedEventArgs e)

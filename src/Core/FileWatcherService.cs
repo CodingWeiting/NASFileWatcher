@@ -125,6 +125,66 @@ namespace NASFileWatcher.Core
             Logger.Log("監控已繼續");
         }
 
+        public void Reconnect()
+        {
+            Logger.Log("正在重新連接...");
+
+            // 停止現有的 watcher
+            _debounceTimer?.Dispose();
+            _debounceTimer = null;
+
+            if (_watcher != null)
+            {
+                _watcher.EnableRaisingEvents = false;
+                _watcher.Dispose();
+                _watcher = null;
+            }
+
+            _isRunning = false;
+            _isPaused = false;
+
+            // 重新載入設定並啟動
+            try
+            {
+                _config = AppConfig.Load();
+
+                if (!Directory.Exists(_config.NasPath))
+                {
+                    throw new DirectoryNotFoundException($"找不到 NAS 路徑: {_config.NasPath}");
+                }
+
+                _watcher = new FileSystemWatcher(_config.NasPath)
+                {
+                    Filter = "*.rfa",
+                    IncludeSubdirectories = true,
+                    NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.CreationTime
+                };
+
+                _watcher.Created += OnFileChanged;
+                _watcher.Changed += OnFileChanged;
+                _watcher.Deleted += OnFileChanged;
+                _watcher.Renamed += OnFileRenamed;
+                _watcher.Error += OnError;
+
+                _watcher.EnableRaisingEvents = true;
+                _isRunning = true;
+
+                // 啟動防抖動計時器
+                _debounceTimer = new Timer(ProcessPendingChanges, null,
+                    TimeSpan.FromSeconds(1),
+                    TimeSpan.FromSeconds(1));
+
+                Logger.Log($"重新連接成功: {_config.NasPath}");
+                StatusChanged?.Invoke(this, new StatusChangedEventArgs { IsHealthy = true, Message = "重新連接成功" });
+            }
+            catch (Exception ex)
+            {
+                Logger.Log($"重新連接失敗: {ex.Message}", LogLevel.Error);
+                StatusChanged?.Invoke(this, new StatusChangedEventArgs { IsHealthy = false, Message = ex.Message });
+                throw;
+            }
+        }
+
         private void OnFileChanged(object sender, FileSystemEventArgs e)
         {
             if (_isPaused || IsBackupFile(e.FullPath))

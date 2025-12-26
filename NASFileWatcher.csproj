@@ -8,7 +8,7 @@
     <ApplicationIcon>Assets\app.ico</ApplicationIcon>
     <AssemblyName>NASFileWatcher</AssemblyName>
     <RootNamespace>NASFileWatcher</RootNamespace>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Authors>Kyros</Authors>
     <Company>Your Company</Company>
     <Product>NAS File Watcher</Product>

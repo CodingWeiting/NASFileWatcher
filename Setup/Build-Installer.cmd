@@ -4,12 +4,12 @@ setlocal enabledelayedexpansion
 
 echo.
 echo ╔════════════════════════════════════════════════════════════════╗
-echo ║         NASFileWatcher 安裝程式建置工具 v1.0.0                ║
+echo ║         NASFileWatcher 安裝程式建置工具 v1.0.1                ║
 echo ╚════════════════════════════════════════════════════════════════╝
 echo.
 
 REM 設定變數
-set VERSION=1.0.0
+set VERSION=1.0.1
 set CONFIGURATION=Release
 
 REM 取得專案根目錄（上一層）
@@ -65,14 +65,11 @@ echo.
 pushd "%PROJECT_ROOT%"
 dotnet clean -c %CONFIGURATION% >nul 2>&1
 if errorlevel 1 (
-    echo ✗ 清理失敗！
-    popd
-    pause
-    exit /b 1
+    echo ⚠ 清理時發生警告，繼續編譯...
+) else (
+    echo ✓ 清理完成
 )
 popd
-
-echo ✓ 清理完成
 
 REM ============================================================================
 REM 步驟 3: 編譯專案

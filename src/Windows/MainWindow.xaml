@@ -20,6 +20,7 @@
                     <MenuItem Header="⚙️ 設定" Click="Settings_Click" />
                     <Separator/>
                     <MenuItem Header="📄 開啟日誌檔" Click="OpenLog_Click"/>
+                    <MenuItem Header="🔄 重新連接" Click="Reconnect_Click"/>
                     <MenuItem x:Name="PauseMenuItem" Header="⏸️ 暫停監控" Click="PauseResume_Click"/>
                     <Separator/>
                     <MenuItem Header="❌ 結束程式" Click="Exit_Click" />

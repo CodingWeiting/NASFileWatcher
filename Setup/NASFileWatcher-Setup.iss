@@ -15,7 +15,7 @@
 ;    方法 3: 命令列: iscc "NASFileWatcher-Setup.iss"
 ;
 ; 3. 輸出檔案位置:
-;    編譯後的安裝檔會產生在: Setup\Output\NASFileWatcher-Setup-v1.0.0.exe
+;    編譯後的安裝檔會產生在: Setup\Output\NASFileWatcher-Setup-v{版本號}.exe
 ;
 ; 4. 編譯前準備:
 ;    確保已執行 "dotnet publish -c Release" 編譯專案
@@ -25,7 +25,7 @@
 
 #define MyAppName "NAS 檔案監控"
 #define MyAppEnglishName "NASFileWatcher"
-#define MyAppVersion "1.0.0"
+#define MyAppVersion "1.0.1"
 #define MyAppPublisher "Kyros"
 #define MyAppURL "https://github.com/yourusername/NASFileWatcher"
 #define MyAppExeName "NASFileWatcher.exe"
