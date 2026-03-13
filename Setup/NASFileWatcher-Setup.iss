@@ -83,7 +83,6 @@ VersionInfoProductVersion={#MyAppVersion}
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [CustomMessages]
-DotNetNotInstalled=.NET 8.0 Desktop Runtime not detected!%n%nPlease install .NET 8.0 Desktop Runtime before continuing.%n%nOpen download page?
 KeepConfigFile=Keep configuration file (config.json)?
 KeepConfigFileDesc=Recommended if you plan to reinstall
 KeepLogsFolder=Keep logs folder (Logs)?
@@ -98,7 +97,7 @@ Name: "autostart"; Description: "{cm:AutoStartup}"; GroupDescription: "{cm:AutoS
 
 [Files]
 ; 主程式和所有 DLL
-Source: "..\bin\Release\net8.0-windows\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\bin\Release\net8.0-windows\win-x64\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; 設定檔範例（保留供參考）
 Source: "..\config\config.example.json"; DestDir: "{app}"; Flags: ignoreversion
 ; 文件檔案
@@ -137,68 +136,12 @@ Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChang
 Type: filesandordirs; Name: "{app}"
 
 [Code]
-var
-  DotNetInstalled: Boolean;
-
 // ============================================================================
-// 檢查 .NET Runtime 是否已安裝
-// ============================================================================
-function IsDotNetInstalled(): Boolean;
-var
-  FindRec: TFindRec;
-  DotNetPath: String;
-  VersionFound: Boolean;
-begin
-  Result := False;
-  VersionFound := False;
-
-  // 檢查 .NET 8.0 Desktop Runtime
-  DotNetPath := ExpandConstant('{pf}\dotnet\shared\Microsoft.WindowsDesktop.App');
-
-  if DirExists(DotNetPath) then
-  begin
-    // 尋找所有 8.* 版本資料夾
-    if FindFirst(DotNetPath + '\8*', FindRec) then
-    begin
-      try
-        repeat
-          // 只檢查資料夾,且名稱以 "8." 開頭
-          if ((FindRec.Attributes and FILE_ATTRIBUTE_DIRECTORY) <> 0) and
-             (Copy(FindRec.Name, 1, 2) = '8.') then
-          begin
-            VersionFound := True;
-            Break;
-          end;
-        until not FindNext(FindRec);
-      finally
-        FindClose(FindRec);
-      end;
-    end;
-  end;
-
-  Result := VersionFound;
-end;
-
-// ============================================================================
-// 初始化設定
+// 初始化設定（Self-Contained 部署，不需要檢查 .NET Runtime）
 // ============================================================================
 function InitializeSetup(): Boolean;
-var
-  ResultCode: Integer;
 begin
   Result := True;
-
-  // 檢查 .NET Runtime
-  DotNetInstalled := IsDotNetInstalled();
-
-  if not DotNetInstalled then
-  begin
-    if MsgBox(CustomMessage('DotNetNotInstalled'), mbConfirmation, MB_YESNO) = IDYES then
-    begin
-      ShellExec('open', 'https://dotnet.microsoft.com/download/dotnet/8.0', '', '', SW_SHOW, ewNoWait, ResultCode);
-    end;
-    Result := False;
-  end;
 end;
 
 // ============================================================================

@@ -13,31 +13,25 @@
 
 ## 系統需求
 
-- Windows 10 或更新版本
-- .NET 6.0 Runtime (Windows Desktop)
+- Windows 10 或更新版本 (x64)
 - 可存取的 NAS 網路磁碟機
 - n8n 或其他接收 Webhook 的服務
 
+> 本程式採用 Self-Contained 部署，不需要額外安裝 .NET Runtime。
+
 ## 安裝步驟
 
-### 1. 安裝 .NET Runtime
-
-如果尚未安裝,請下載並安裝:
-https://dotnet.microsoft.com/download/dotnet/6.0
-
-選擇 "Desktop Runtime" (Windows x64)
-
-### 2. 編譯程式
+### 1. 編譯程式
 
 ```bash
 cd NASFileWatcher
 dotnet restore
-dotnet build -c Release
+dotnet publish -c Release
 ```
 
-編譯後的程式位於: `bin/Release/net6.0-windows/`
+編譯後的程式位於: `bin/Release/net8.0-windows/win-x64/`
 
-### 3. 首次執行設定
+### 2. 首次執行設定
 
 1. 執行 `NASFileWatcher.exe`
 2. 右鍵托盤圖示 → **設定**

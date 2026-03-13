@@ -9,6 +9,10 @@
     <AssemblyName>NASFileWatcher</AssemblyName>
     <RootNamespace>NASFileWatcher</RootNamespace>
     <Version>1.0.1</Version>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     <Authors>Kyros</Authors>
     <Company>Your Company</Company>
     <Product>NAS File Watcher</Product>

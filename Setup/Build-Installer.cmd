@@ -16,7 +16,7 @@ REM 取得專案根目錄（上一層）
 set PROJECT_ROOT=%~dp0..
 set SETUP_DIR=%~dp0
 set ISS_FILE=%SETUP_DIR%NASFileWatcher-Setup.iss
-set BUILD_DIR=%PROJECT_ROOT%\bin\%CONFIGURATION%\net8.0-windows
+set BUILD_DIR=%PROJECT_ROOT%\bin\%CONFIGURATION%\net8.0-windows\win-x64
 set OUTPUT_DIR=%SETUP_DIR%Output
 
 REM Inno Setup 路徑
@@ -79,7 +79,7 @@ echo [3/4] 編譯專案 (%CONFIGURATION%)...
 echo.
 
 pushd "%PROJECT_ROOT%"
-dotnet build -c %CONFIGURATION%
+dotnet publish -c %CONFIGURATION%
 
 if errorlevel 1 (
     echo.
