@@ -132,7 +132,6 @@
 ```json
 {
   "EnableBatchNotification": true,
-  "BatchThreshold": 10,
   "BatchWindowSeconds": 10
 }
 ```
@@ -274,7 +273,7 @@ else
 // 範例: 同一資料夾內的變動才批次
 var grouped = itemsToProcess
     .GroupBy(x => Path.GetDirectoryName(x.Key))
-    .Where(g => g.Count() >= _config.BatchThreshold);
+    .Where(g => g.Count() >= 2);
 
 foreach (var group in grouped)
 {

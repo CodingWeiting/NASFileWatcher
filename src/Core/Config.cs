@@ -11,7 +11,6 @@ namespace NASFileWatcher.Core
         public int DebounceSeconds { get; set; } = 10;
         public bool EnableLogging { get; set; } = true;
         public bool EnableBatchNotification { get; set; } = true;
-        public int BatchThreshold { get; set; } = 10; // 超過此數量啟用批次通知
         public int BatchWindowSeconds { get; set; } = 30; // 多少秒內的變動視為批次
         
         // 使用使用者資料夾存放設定檔,避免權限問題
@@ -80,9 +79,6 @@ namespace NASFileWatcher.Core
                 return false;
             
             if (DebounceSeconds < 0 || DebounceSeconds > 60)
-                return false;
-            
-            if (BatchThreshold < 2 || BatchThreshold > 1000)
                 return false;
             
             if (BatchWindowSeconds < 5 || BatchWindowSeconds > 300)

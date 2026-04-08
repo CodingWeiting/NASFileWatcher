@@ -4,6 +4,5 @@
   "DebounceSeconds": 3,
   "EnableLogging": true,
   "EnableBatchNotification": true,
-  "BatchThreshold": 10,
   "BatchWindowSeconds": 10
 }

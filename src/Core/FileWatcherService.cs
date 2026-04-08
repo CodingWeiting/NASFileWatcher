@@ -315,9 +315,18 @@ namespace NASFileWatcher.Core
                     // 重置批次窗口
                     _batchWindowStart = null;
 
-                    // 啟用批次通知時,一律以批次方式發送（不受 BatchThreshold 限制）
-                    Logger.Log($"批次處理 {itemsToProcess.Count} 個檔案變動");
-                    ProcessBatchChanges(itemsToProcess);
+                    if (itemsToProcess.Count == 1)
+                    {
+                        // 只有 1 個檔案,用個別通知更直覺
+                        Logger.Log($"單一檔案變動,個別通知");
+                        ProcessFileChange(itemsToProcess[0].Value);
+                    }
+                    else
+                    {
+                        // 2 個以上,批次合併發送
+                        Logger.Log($"批次處理 {itemsToProcess.Count} 個檔案變動");
+                        ProcessBatchChanges(itemsToProcess);
+                    }
                 }
                 else
                 {

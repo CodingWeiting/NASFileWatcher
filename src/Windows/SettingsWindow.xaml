@@ -2,25 +2,30 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="設定" 
-        Height="550" 
+        Height="480"
         Width="600"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize">
-    <Grid Margin="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+    <DockPanel Margin="20">
+        <!-- 底部按鈕固定不捲動 -->
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+            <TextBlock Text="✅ 設定會自動儲存"
+                       VerticalAlignment="Center"
+                       Foreground="Green"
+                       FontWeight="Bold"
+                       Margin="0,0,10,0"/>
+            <Button Content="關閉"
+                    Width="80"
+                    Height="30"
+                    IsDefault="True"
+                    Click="CloseButton_Click"/>
+        </StackPanel>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel>
 
         <!-- NAS 路徑 -->
-        <StackPanel Grid.Row="0" Margin="0,0,0,15">
+        <StackPanel Margin="0,0,0,15">
             <Label Content="NAS 路徑:" FontWeight="Bold"/>
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -47,7 +52,7 @@
         </StackPanel>
 
         <!-- Webhook URL -->
-        <StackPanel Grid.Row="1" Margin="0,0,0,15">
+        <StackPanel Margin="0,0,0,15">
             <Label Content="n8n Webhook URL:" FontWeight="Bold"/>
             <TextBox x:Name="WebhookUrlTextBox" 
                      Height="30" 
@@ -60,7 +65,7 @@
         </StackPanel>
 
         <!-- 防抖動時間 -->
-        <StackPanel Grid.Row="2" Margin="0,0,0,15">
+        <StackPanel Margin="0,0,0,15">
             <Label Content="防抖動時間 (秒):" FontWeight="Bold"/>
             <StackPanel Orientation="Horizontal">
                 <Slider x:Name="DebounceSlider" 
@@ -82,7 +87,7 @@
         </StackPanel>
 
         <!-- 啟用日誌 -->
-        <StackPanel Grid.Row="3" Margin="0,0,0,15">
+        <StackPanel Margin="0,0,0,15">
             <CheckBox x:Name="EnableLoggingCheckBox" 
                       Content="啟用詳細日誌記錄" 
                       VerticalAlignment="Center"/>
@@ -93,32 +98,12 @@
         </StackPanel>
 
         <!-- 批次通知設定 -->
-        <GroupBox Grid.Row="4" Header="批次通知設定" Margin="0,0,0,15" Padding="10">
+        <GroupBox Header="批次通知設定" Margin="0,0,0,15" Padding="10">
             <StackPanel>
                 <CheckBox x:Name="EnableBatchCheckBox" 
                           Content="啟用智慧批次通知"
                           Margin="0,0,0,10"/>
                 
-                <StackPanel Margin="0,0,0,10">
-                    <Label Content="批次閾值 (超過此數量啟用批次):" FontWeight="Bold"/>
-                    <StackPanel Orientation="Horizontal">
-                        <Slider x:Name="BatchThresholdSlider" 
-                                Width="300" 
-                                Minimum="5" 
-                                Maximum="50" 
-                                TickFrequency="5" 
-                                IsSnapToTickEnabled="True"
-                                VerticalAlignment="Center"/>
-                        <TextBlock Text="{Binding ElementName=BatchThresholdSlider, Path=Value}" 
-                                   Margin="10,0,0,0" 
-                                   VerticalAlignment="Center"
-                                   FontWeight="Bold"/>
-                        <TextBlock Text="個檔案" 
-                                   Margin="5,0,0,0" 
-                                   VerticalAlignment="Center"/>
-                    </StackPanel>
-                </StackPanel>
-
                 <StackPanel>
                     <Label Content="批次時間窗口 (秒):" FontWeight="Bold"/>
                     <StackPanel Orientation="Horizontal">
@@ -146,7 +131,7 @@
         </GroupBox>
 
         <!-- 說明 -->
-        <Border Grid.Row="5" 
+        <Border
                 Background="#FFF9F9F9" 
                 BorderBrush="#FFCCCCCC" 
                 BorderThickness="1" 
@@ -165,7 +150,7 @@
         </Border>
 
         <!-- 測試連線按鈕 -->
-        <StackPanel Grid.Row="6" Orientation="Horizontal" Margin="0,0,0,15">
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
             <Button x:Name="TestNasButton" 
                     Content="測試 NAS 連線" 
                     Width="120" 
@@ -179,18 +164,7 @@
                     Click="TestWebhookButton_Click"/>
         </StackPanel>
 
-        <!-- 按鈕 -->
-        <StackPanel Grid.Row="7" Orientation="Horizontal" HorizontalAlignment="Right">
-            <TextBlock Text="✅ 設定會自動儲存"
-                       VerticalAlignment="Center"
-                       Foreground="Green"
-                       FontWeight="Bold"
-                       Margin="0,0,10,0"/>
-            <Button Content="關閉"
-                    Width="80"
-                    Height="30"
-                    IsDefault="True"
-                    Click="CloseButton_Click"/>
         </StackPanel>
-    </Grid>
+        </ScrollViewer>
+    </DockPanel>
 </Window>

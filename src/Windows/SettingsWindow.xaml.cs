@@ -28,7 +28,6 @@ namespace NASFileWatcher.Windows
             EnableLoggingCheckBox.Unchecked += AutoSave;
             EnableBatchCheckBox.Checked += AutoSave;
             EnableBatchCheckBox.Unchecked += AutoSave;
-            BatchThresholdSlider.ValueChanged += AutoSave;
             BatchWindowSlider.ValueChanged += AutoSave;
         }
 
@@ -41,7 +40,6 @@ namespace NASFileWatcher.Windows
             DebounceSlider.Value = _config.DebounceSeconds;
             EnableLoggingCheckBox.IsChecked = _config.EnableLogging;
             EnableBatchCheckBox.IsChecked = _config.EnableBatchNotification;
-            BatchThresholdSlider.Value = _config.BatchThreshold;
             BatchWindowSlider.Value = _config.BatchWindowSeconds;
         }
 
@@ -239,7 +237,6 @@ namespace NASFileWatcher.Windows
             _config.DebounceSeconds = (int)DebounceSlider.Value;
             _config.EnableLogging = EnableLoggingCheckBox.IsChecked ?? true;
             _config.EnableBatchNotification = EnableBatchCheckBox.IsChecked ?? true;
-            _config.BatchThreshold = (int)BatchThresholdSlider.Value;
             _config.BatchWindowSeconds = (int)BatchWindowSlider.Value;
 
             try
@@ -274,7 +271,6 @@ namespace NASFileWatcher.Windows
                 _config.DebounceSeconds = (int)DebounceSlider.Value;
                 _config.EnableLogging = EnableLoggingCheckBox.IsChecked ?? true;
                 _config.EnableBatchNotification = EnableBatchCheckBox.IsChecked ?? true;
-                _config.BatchThreshold = (int)BatchThresholdSlider.Value;
                 _config.BatchWindowSeconds = (int)BatchWindowSlider.Value;
 
                 // 儲存到檔案
@@ -297,7 +293,6 @@ namespace NASFileWatcher.Windows
                 _config.DebounceSeconds = (int)DebounceSlider.Value;
                 _config.EnableLogging = EnableLoggingCheckBox.IsChecked ?? true;
                 _config.EnableBatchNotification = EnableBatchCheckBox.IsChecked ?? true;
-                _config.BatchThreshold = (int)BatchThresholdSlider.Value;
                 _config.BatchWindowSeconds = (int)BatchWindowSlider.Value;
 
                 _config.Save();
