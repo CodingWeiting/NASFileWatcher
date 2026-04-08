@@ -4,12 +4,12 @@ setlocal enabledelayedexpansion
 
 echo.
 echo ╔════════════════════════════════════════════════════════════════╗
-echo ║         NASFileWatcher 安裝程式建置工具 v1.0.1                ║
+echo ║         NASFileWatcher 安裝程式建置工具 v1.0.2                ║
 echo ╚════════════════════════════════════════════════════════════════╝
 echo.
 
 REM 設定變數
-set VERSION=1.0.1
+set VERSION=1.0.2
 set CONFIGURATION=Release
 
 REM 取得專案根目錄（上一層）

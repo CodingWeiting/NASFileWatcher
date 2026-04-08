@@ -25,7 +25,7 @@
 
 #define MyAppName "NAS 檔案監控"
 #define MyAppEnglishName "NASFileWatcher"
-#define MyAppVersion "1.0.1"
+#define MyAppVersion "1.0.2"
 #define MyAppPublisher "Kyros"
 #define MyAppURL "https://github.com/yourusername/NASFileWatcher"
 #define MyAppExeName "NASFileWatcher.exe"
